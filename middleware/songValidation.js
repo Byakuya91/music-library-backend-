@@ -13,7 +13,7 @@ function songValidation(req, res, next) {
   for (const song in songs) {
     if (
       // checking if property name is equal to the property type.
-      song.hasOwnProperty(song.name) &&
+      song.hasOwnProperty(song.name) ||
       typeof (song[song.name] === song.type)
     ) {
       // proceed with the request

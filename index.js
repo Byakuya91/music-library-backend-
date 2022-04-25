@@ -8,9 +8,9 @@ const songLogger = require("./middleware/song-logger");
 const app = express();
 
 // middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 // Endpoint construction
 
@@ -51,6 +51,15 @@ app.put("/api/songs/:id", (req, res) => {
   const songToUpdate = repoContext.songs.updateSong(id, songPropertiesToModify);
   // returning the updated song back to the client.
   return res.send(songToUpdate);
+});
+//  DELETE a song
+app.delete("/api/songs/:id", (req, res) => {
+  // grabbing id of the requested song
+  const id = parseInt(req.params.id);
+  //  remove the song
+  const deletedSong = repoContext.songs.deleteSong(id);
+  // returning the deleted song back to the client.
+  return res.send(deletedSong);
 });
 
 // starting a server
