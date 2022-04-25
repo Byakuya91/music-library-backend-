@@ -2,6 +2,8 @@
 const express = require("express");
 const cors = require("cors");
 const repoContext = require("./repository/repository-wrapper");
+const songValidate = require("./middleware/songValidation");
+const songLogger = require("./middleware/song-logger");
 // create app object for express.
 const app = express();
 
@@ -30,14 +32,25 @@ app.get("/api/songs/:id", (req, res) => {
   return res.send(songs);
 });
 
-//  POST a song to JSON
-app.post("/api/songs", (req, res) => {
+//  POST a new song to JSON
+app.post("/api/songs", [songLogger, songValidate], (req, res) => {
   // access the request made by the user
   const newSong = req.body;
   // adds new song to the songs JSON file
   const addedSong = repoContext.songs.createSong(newSong);
   // user sees the added song
   return res.send(addedSong);
+});
+//  PUT a new Song inside.
+app.put("/api/songs/:id", (req, res) => {
+  // grabbing id of the requested song
+  const id = parseInt(req.params.id);
+  // user sending the entire object with all its properties.
+  const songPropertiesToModify = req.body;
+  //  updating the JSON Song file with the requested information from client.
+  const songToUpdate = repoContext.songs.updateSong(id, songPropertiesToModify);
+  // returning the updated song back to the client.
+  return res.send(songToUpdate);
 });
 
 // starting a server
